@@ -1035,11 +1035,20 @@ div.btn > * {
     display: none;
 }
 
+.elevensight-widget-launcher {
+    z-index: 1 !important;
+}
+
 
 /* mobile styling */
 @media screen and (max-width:480px) {
     .wrapper-container { 
         height: 100%;
+    }
+
+    .elevensight-widget-launcher {
+        z-index: 1 !important;
+        bottom: 60px;
     }
 
     .side-tab {
@@ -1211,7 +1220,7 @@ div.btn > * {
         top: 0vw;
         height: 55px;
         left:0px;
-        margin:10px 10px 10px;
+        margin:10px 10px 10px 0px;
     }
 
     .logo-container div {
