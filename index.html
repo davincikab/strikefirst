@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+    <title>Strike First - High IQ</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/geobuf@3.0.2/dist/geobuf.js"></script>
+    <script src="https://unpkg.com/pbf@3.0.5/dist/pbf.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+</head>
+<body>
+    <div class="wrapper-container">
+        <div class="spinner-container" id="spinner-container">
+            <div class="spinner"></div>
+            <p class="spinner-text">Loading Data ...</p>
+        </div>
+
+        <div class="map-container">
+            <!-- <div class="top-tab">
+                <div class="tabs-right">
+                    <div class="tab">VIEW ALL</div>
+                    <div class="tab">FAVORITES</div>
+                </div>
+            </div> -->
+            <a class="elevensight-11button-v2" data-btn-style-hash-id="-OXhbRVh8UlTZy10QUnmuvVWRBZ1v8Pk2HYL8qJJ1-EsP-FYfg"></a>
+            <div id="map">
+                <div class="logo-container">
+                    <img src="logo.png" alt="">
+                    <div class="">
+                        <div class="title">HIGHIQ</div>
+                        <div class="logo-caption">Track your leads</div>
+                    </div>
+                </div>
+
+                <div class="tab-toggler" id="tab-toggler">
+                    <div class="cart-count" id="zip-count">0</div>
+                    <div>Lead Hopper</div>
+
+                    <span>
+                        <i class="fa fa-angle-right"></i>
+                    </span>
+                </div>
+
+                <!-- visual lead toggler -->
+                <div class="visual-toggler" id="dropdown-toggler" style="display: none;">
+                    <span class="tab-text">Lead Type</span>
+                    <span><i class="fa fa-angle-down"></i></span>
+                </div>
+
+                <div class="top-section">
+                    <!-- Add the geocoder  -->
+                    <div class="filter-section">
+                        <div id="geocoder"></div>
+                    </div>
+
+                     <!-- top right reset btn -->
+                    <div class="refresh-btn" id="refresh-btn">
+                        <i class="fa fa-arrow-rotate-right"></i>
+                        <div>Refresh</div>
+                    </div>
+<!-- 
+                    <div class="video-call-btn">
+                        Video Call Us Live
+                        <span>
+                            <i class="fa fa-video"></i>
+                        </span>
+                    </div> -->
+                </div>
+
+                <div class="visual-tabs">
+                    <div class="visual-tab-list">
+                        <div class="visual-tab active" id="tab-1" data-id="Absentee Owners">
+                            <!-- <span><i class="fa fa-credit-card"></i></span> -->
+                            <span class="tab-text">Absentee Owners</span>
+                        </div>
+        
+                        <div class="visual-tab" id="tab-1" data-id="LIKELY TO SELL">
+                            <!-- <span><i class="fa fa-dollar-sign"></i></span> -->
+                            <span class="tab-text">Likely to Sell</span>
+                        </div>
+        
+                        <div class="visual-tab" id="tab-1" data-id="BAD CREDIT">
+                            <!-- <span><i class="fa fa-credit-card"></i></span> -->
+                            <span class="tab-text">Bad Credit</span>
+                        </div>
+        
+                        <div class="visual-tab" id="tab-1" data-id="DIVORCED">
+                            <!-- <span><i class="fa fa-credit-card"></i></span> -->
+                            <span class="tab-text">Divorced</span>
+                        </div>
+        
+                        <div class="visual-tab" id="tab-1" data-id="DISTRESSED">
+                            <!-- <span><i class="fa fa-eye-slash"></i></span> -->
+                            <span class="tab-text">Distressed</span>
+                        </div>                
+        
+                        <div class="visual-tab" id="tab-1" data-id="DOWNSIZE">
+                            <!-- <span><i class="fa fa-credit-card"></i></span> -->
+                            <span class="tab-text">Downsize</span>
+                        </div>
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+
+        <div class="side-tab">
+            <div class="lead-info d-none" id="lead-info"></div>
+
+            <!-- dropdown sections -->
+            <div class="section-header" id="section-header">
+                <div>
+                    <img src="logo.png" alt="" height="80px" width="80px">
+                </div>
+
+                <div class="close-btn close-side-tab" id="close-side-tab">
+                    <span>
+                        <i class="fa fa-times"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="section-zips">
+                <div class="next-step" id="next-btn">
+                    <div>
+                        <div class="title">NEXT STEP</div>
+                        <span class="">(Campaign Types)</span>
+                    </div>
+
+                    <span>
+                        <i class="fa fa-angle-right"></i>
+                    </span>
+                </div>
+
+                <div class="zip-section">
+                    <div class="zip-count" id="lead-count">
+                    </div>
+
+                    <div class="zip-list" id="zip-list">
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="campaign-section" id="campaign-section">
+                <div class="section-header">
+                    <div>
+                        <img src="logo.png" alt="" height="80px" width="80px">
+                    </div>
+    
+                    <div class="close-btn close-side-tab" id="close-campaign-section">
+                        <span>
+                            <i class="fa fa-times"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    Campaign Types
+                </div>
+
+                <div class="campaign-toggler" data-id="1" data-text="Video Brand Campaign" id="video">
+
+                    <div class="select-div">
+                        <div class="toggle-caret">
+                            <i class="fa fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="icon">
+                        <div class="toggle-caret">
+                            <i class="fa fa-play"></i>
+                            <!-- <i class="fa fa-angle-up"></i> -->
+                        </div>
+
+                        <span>
+                            <i class="fa fa-bullhorn"></i>
+                        </span>
+                    </div>
+                    
+                    <div>Video Brand Campaign</div>
+                </div>
+
+                <div class="campaign-toggler" data-id="2" data-text="Text Message Campaign" id="text">
+                    <div class="select-div">
+                        <div class="toggle-caret">
+                            <i class="fa fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="icon">
+                        <div class="toggle-caret">
+                            <i class="fa fa-bars"></i>
+                            <!-- style="transform: rotate(90deg);" -->
+                            <!-- <i class="fa fa-angle-up"></i> -->
+                        </div>
+
+                        <span>
+                            <i class="fa fa-bullhorn"></i>
+                        </span>
+                    </div>
+                    
+                    <div>Text Message Campaign</div>
+                </div>
+
+                <div class="campaign-toggler" data-id="3" data-text="Call for Appts Campaign" id="isa">
+                    <div class="select-div">
+                        <div class="toggle-caret">
+                            <i class="fa fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="icon">
+                        <div class="toggle-caret">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <span>
+                            <i class="fa fa-bullhorn"></i>
+                        </span>
+                    </div>
+                    
+                    <div>Call for Appts Campaign</div>
+                </div>
+
+                <div class="campaign-success-progress">
+                    <div class="progress-round">
+                        <div id="percentage">100%</div>
+                    </div>
+                </div>
+
+
+                <!-- final step btn: toggle the form -->
+                <div class="video-caption" id="final-step">
+                    <div class="">
+                        <div id="caption-title">Final Step</div>
+                        <span id="caption">(Talk with Fulfillment Team)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-info-form d-none" id="user-form">
+                <!-- header -->
+                <div class="form-header section-header">
+                    <div>
+                        <img src="logo.png" alt="" height="80px" width="80px">
+                    </div>
+    
+                    <div class="close-btn close-side-tab" id="close-user-form">
+                        <span>
+                            <i class="fa fa-times"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <form action="/" id="input-form" method="post">
+                    <div class="input-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" name="first_name" id="first_name" placeholder="Enter" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" name="last_name" id="last_name" placeholder="Enter" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="brokerage_name">Brokerage Name</label>
+                        <input type="text" name="a2" id="brokerage_name" placeholder="Enter" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="a1" id="email" placeholder="Enter" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="text" name="a3" id="phone_number" placeholder="Enter" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit video-caption" id="user-info">
+                        <div class="">
+                            <div id="caption-title">Final Step</div>
+                            <span class="caption">(Talk with Fulfillment Team)</span>
+                        </div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="video">
+                <div class="close-btn" id="close-video">
+                    <span>
+                        <i class="fa fa-times"></i>
+                    </span>
+                </div>
+
+                <div class="section-title">How it works </div>
+                <div class="video-info">
+                    <iframe 
+                        width="100%" 
+                        height="200" 
+                        src="https://www.youtube.com/embed/9EF5hTZGSug?enablejsapi=1" https://youtu.be/
+                        title="Real Estate Video Campaings" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        id="iframe-1"
+                        class="yt_player_iframe"
+                    ></iframe>
+
+                    <iframe 
+                        width="100%" 
+                        height="200" 
+                        src="https://www.youtube.com/embed/3ZfB13lcAmM?enablejsapi=1"
+                        title="How Text Campaigns Transform Appointment Setting" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        id="iframe-2"
+                        class="yt_player_iframe"
+                    ></iframe>
+
+                    <iframe 
+                            width="100%" 
+                            height="200" 
+                            src="https://www.youtube.com/embed/HRYIfHaFmfo?enablejsapi=1" 
+                            title="High IQ ISA" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            id="iframe-3"
+                            class="yt_player_iframe"
+                        >
+                        </iframe>
+
+                    <div class="video-caption" data-campaign="video" id="add-campaign">
+                        <div class="">
+                            <div id="caption-title">Add Campaign</div>
+                            <span id="caption">(Video Brand Campaign)</span>
+                        </div>
+
+                        <span>
+                            <i class="fa fa-angle-right"></i>
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="div-section d-none">
+                
+                <div class="collapse">
+                    <div class="collapse-toggler" data-id="1">
+                        <div class="toggle-caret">
+                            <i class="fa fa-play"></i>
+                            <i class="fa fa-angle-up"></i>
+                        </div>
+                        <div>Social Brand Awareness &  Trust Building</div>
+                    </div>
+
+                    <div class="collapse-section">
+                        <iframe 
+                            width="100%" 
+                            height="200" 
+                            src="https://www.youtube.com/embed/9EF5hTZGSug" 
+                            title="Real Estate Video Campaings" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            id="iframe-1"
+                        ></iframe>
+
+                        <a href="https://calendly.com/highiq-marketing/real-estate-conversion-ecosystem" class="btn-link">Schedule Consultation</a>
+                    </div>
+
+                    <div class="collapse-toggler"data-id="2">
+                        <div class="toggle-caret">
+                            <i class="fa fa-play"></i>
+                            <i class="fa fa-angle-up"></i>
+                        </div>
+                        <div>Personalized Outreach & Passive Followup</div>
+                    </div>
+                    <div class="collapse-section">
+                        <iframe 
+                            width="100%" 
+                            height="200" 
+                            src="https://www.youtube.com/embed/3ZfB13lcAmM" 
+                            title="How Text Campaigns Transform Appointment Setting" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                        ></iframe>
+
+                        <a href="https://calendly.com/highiq-marketing/real-estate-conversion-ecosystem" class="btn-link">Schedule Consultation</a>
+                    </div>
+
+                    <div class="collapse-toggler" data-id="3">
+                        <div class="toggle-caret">
+                            <i class="fa fa-play"></i>
+                            <i class="fa fa-angle-up"></i>
+                        </div>
+
+                        <div>Direct Sales for Hot Appointments</div> 
+                    </div>
+
+                    <div class="collapse-section">
+                        <iframe 
+                            width="100%" 
+                            height="200" 
+                            src="https://www.youtube.com/embed/HRYIfHaFmfo?enablejsapi=1" 
+                            title="High IQ ISA" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            id="iframe-3"
+                        >
+                        </iframe>
+
+                        <a href="https://calendly.com/highiq-marketing/real-estate-conversion-ecosystem" class="btn-link">Schedule Consultation</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- listing items -->
+            <div class="items-section">
+                <!-- <div class="items-header">
+                    <div class="column-name">Lead Count</div>
+                    <div class="column-name info">Market</div>
+                    <div class="column-name">Add</div>
+                </div> -->
+
+                <div class="items-list d-none" id="item-list"></div>
+            </div>
+           
+        </div>
+    </div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiaGlnaGlxIiwiYSI6ImNsNnVwbHFhMDBsamozbnA1ajBraHlqbmMifQ.mP1mWm5OxGRKfiN0qiH-bg';
+    
+    const map = new mapboxgl.Map({
+        container: 'map', 
+        style: 'mapbox://styles/highiq/cl76dudld001114pbuykepmna',
+        center: {lng: -98.40486166251202, lat: 39.13595229401548}, 
+        zoom:3.25
+    });
+
+    // geocoder:
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        types: 'country,region,place,postcode,locality,neighborhood',
+        placeholder:'Search by city or Zip...',
+        countries:'us'
+    });
+    
+    geocoder.addTo('#geocoder');
+
+    geocoder.on('result', function({result}) {
+        console.log(result);
+
+        map.flyTo({
+            center:result.center, 
+            zoom:11
+        });
+
+        // get the state;
+        let stateName;
+        result.context.forEach(ctx => {
+            if(ctx.id.includes('region')) {
+                stateName = ctx.text;
+            }
+        });
+
+        if(stateName) {
+            updateStateFeatureOpacity(stateName);
+            updateMarkers();
+        }
+
+        if(result.place_type[0] == 'postcode') {
+            // do update the 
+            let item = visualInstance.data.find(dt => dt.zipcode == result.text);
+
+            // update the lead info
+            item ? visualInstance.updateSideSection(item) : "";
+
+            // select the zipcode regions
+            highLightZipCode(result.text);
+
+            // toggle marker popup
+            visualInstance.setActiveZipCode(result.text);
+        }
+
+    });
+
+    // handle results
+    map.on('load', function(e) {
+        d3.csv('master_counts.csv')
+        .then(data => {
+            visualInstance.setData(data);  
+            
+            document.getElementById("spinner-container").classList.add("d-none");
+        })
+        .catch(console.error);
+        
+        // point data
+        map.addSource('leads', {
+            type:'geojson',
+            data:{"type":"FeatureCollection", "features":[]},
+            cluster: true,
+            clusterRadius: 50,
+            clusterMinPoints:5,
+            clusterMaxZoom:13
+        });
+
+        map.addLayer({
+            id: 'clusters',
+            type: 'circle',
+            source: 'leads',
+            minzoom:9,
+            filter: ['has', 'point_count'],
+            paint: {
+                'circle-color': [
+                    'step',
+                    ['get', 'point_count'],
+                    '#51bbd6',
+                    100,
+                    '#f1f075',
+                    750,
+                    '#f28cb1'
+                ],
+                'circle-radius': [
+                    'step',
+                    ['get', 'point_count'],
+                    20,
+                    100,
+                    30,
+                    750,
+                    40
+                ],
+                'circle-opacity':1
+            },
+            layout:{
+                // visibility:'none'
+            }
+        });
+
+        map.addLayer({
+            id: 'cluster-count',
+            type: 'symbol',
+            source: 'leads',
+            minzoom:9,
+            filter: ['has', 'point_count'],
+            layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12,
+                // visibility:'none'
+            }
+        });
+
+        // click event on states
+        map.on('click', 'states', function(e) {
+            let feature = e.features[0];        
+
+            // bounds
+            fitToFeatureBounds(feature)
+
+            // the feature opacity: reduces
+            let stateName = feature.properties.NAME_1;
+            updateStateFeatureOpacity(stateName);
+        });
+
+        map.on('mouseenter', 'states', handleMouseEnter);
+        map.on('mouseleave', 'states', handleMouseLeave);
+
+
+        // county click
+        map.on('mouseenter', 'counties', handleMouseEnter);
+        map.on('mouseleave', 'counties', handleMouseLeave);
+
+
+        // hightlight zipcodes on hover
+        map.on('mousemove', 'zipcodes', (e) => {
+            handleMouseEnter();
+            let feature = e.features[0];
+
+            // get the code
+            let code = feature.properties.Name;
+
+            highLightZipCode(code);
+        });
+
+        map.on('mouseleave', 'zipcodes', (e) => {
+            highLightZipCode(0);
+            handleMouseLeave();
+        });
+
+        map.on('click', 'counties', function(e) {
+            let zoom = map.getZoom();
+            console.log(e.lngLat);
+
+            let feature = e.features[0];
+            console.log(feature.toJSON());
+
+            // zoom to the 
+            // fitToFeatureBounds(feature);
+            map.flyTo({
+                center:e.lngLat,
+                zoom:9
+            });
+
+        });
+
+        function handleMouseEnter() {
+            map.getCanvas().style.cursor = "pointer";
+        }
+
+        function handleMouseLeave() {
+            map.getCanvas().style.cursor = "";
+        }
+
+        // update the markers
+        map.on('render', () => {
+            if (!map.isSourceLoaded('leads')) return;
+            updateMarkers();
+        });
+
+    }); 
+
+    function updateStateFeatureOpacity(stateName) {
+        map.once('zoomend', () => {
+            map.setPaintProperty('states', 'fill-opacity', [
+                'match',
+                ['get', 'NAME_1'],
+                `${stateName}`,
+                0,
+                0.8
+            ]);
+
+            map.setPaintProperty('counties', 'fill-opacity', [
+                'match',
+                ['get', 'NAME_1'],
+                `${stateName}`,
+                0.2,
+                0
+            ]);
+
+            // filter the data for a given state
+            visualInstance.updateLeadsByState(stateName);
+        }); 
+
+        visualInstance.setActiveZipCode(null);
+    }
+
+    function highLightZipCode(code) {
+        map.setPaintProperty('zipcodes', 'fill-color', [
+            'match',
+            ['get', 'Name'],
+            `${code}`,
+            // '#6DF3F5',
+            '#9421fa',
+            '#fff'
+        ]);
+
+
+        map.setPaintProperty('zipcodes', 'fill-opacity', [
+            'match',
+            ['get', 'Name'],
+            `${code}`,
+            0.6,
+            0.1
+        ]);
+
+    }
+
+    function fitToFeatureBounds(feature) {
+        let bbox = turf.bbox(feature.toJSON());
+
+        // if mobile
+        if(isMobile()) {
+            map.fitBounds(bbox, { padding:-120 });
+        } else {
+            map.fitBounds(bbox, { padding:80 });
+        }
+    }
+
+    // tab toggler
+    let tabs = document.querySelectorAll(".visual-tab");
+    let activeTab = document.querySelector(".visual-tab.active");
+
+    tabs.forEach(tab => {
+        tab.onclick = (e) => {
+            let { id, dataset } = e.target;
+
+            if(activeTab == e.target) {
+                return;
+            }
+
+            activeTab.classList.remove('active');
+            activeTab = e.target;
+
+            // update the visual
+            visualInstance.setActiveId(dataset.id);
+            visualInstance.renderVisual();
+
+            // active state
+            activeTab.classList.add('active');
+        }
+    });
+
+    // visual togglers
+    let Visuals = function(data) {
+        this.itemListingEl = document.getElementById("item-list");
+        this.data = data;
+        this.dataItems = [];
+        this.activeZip;
+        this.selectedZips = [];
+        this.activeId = "Absentee Owners";
+
+        this.setData = (data) => {
+            this.data = data;
+            this.leads = [];
+            this.dataItems = data;
+
+            // render the defualt visual
+            setTimeout(() => {
+                this.renderVisual();
+            }, 100);
+        }
+
+        this.setCounty = (county) => {
+            this.county = county;
+            this.filterItemsByCounty();
+        }
+
+        this.setActiveZipCode = (zipcode) => {
+            this.activeZip = zipcode;
+        }
+
+        this.setActiveId = (id) => {
+            this.activeId = id;
+        }
+
+        this.filterItemsByCounty = () => {
+            this.dataItems = this.data.filter(item => item.county == this.county);
+        }
+
+        this.updateLeads = (leads) => {
+            this.leads = leads;
+        }
+
+        this.updateSelectedZips = (zipEntry) => {
+            let zip = this.selectedZips.find(zp => zp.zipcode == zipEntry.zipcode);
+
+            if(!zip) {
+                this.selectedZips.push(zipEntry);
+
+                let toggler = document.getElementById("tab-toggler")
+                toggler.classList.add('on-add');
+                
+                setTimeout(() => {
+                    toggler.classList.remove('on-add');
+                }, 500);
+
+
+            }
+        }
+
+        this.updateSelectedZipsList = () => {
+            let total = this.selectedZips.reduce((a,b) => a + parseInt(b[this.activeId]), 0);
+            console.log(total);
+
+            // update count
+            document.getElementById("lead-count").innerHTML = `
+                <div>Selected Zipcode Total:</div>
+                <div class="lead-count">${total}</div>
+            `;
+
+            // update zip count
+            document.getElementById("zip-count").innerHTML = this.selectedZips.length;
+
+            // update zip list 
+            let zipList = document.getElementById("zip-list");
+            zipList.innerHTML = "";
+            this.selectedZips.forEach(zipEntry => {
+                zipList.innerHTML += `<div class="selected-zip">
+                    <div class="remove-zip" data-id="${zipEntry.zipcode}">
+                        <i class="fa fa-times"></i>
+                    </div>
+
+                    <div class="zipcode">
+                        <div>Zipcode:</div>
+                        <div>${zipEntry.zipcode}</div>
+                    </div>
+
+                    <div class="border"></div>
+
+                    <div class="lead">
+                        <div>Lead:</div>  
+                        <div>${zipEntry[this.activeId]}</div>  
+                    </div>
+                </div>`;
+            });
+
+            this.fireRemoveListener();
+        }
+
+
+        this.fireRemoveListener = () => {
+            let removeBtns = document.querySelectorAll(".remove-zip");
+            console.log(removeBtns);
+
+            removeBtns.forEach(btn => {
+                btn.onclick = (e) => {
+                    let { dataset : { id } } = e.target;
+
+                    this.removeSelectedZip(id);
+                }
+            })
+        }
+
+        this.removeSelectedZip = (zipcode) => {
+            this.selectedZips = this.selectedZips.filter(zip => zip.zipcode !== zipcode);
+            this.updateSelectedZipsList();
+        }
+
+        this.renderVisual = () => {
+            // render visual by id
+            // this.renderItemListing();
+            this.renderMarkers();
+        }
+
+        this.renderItemListing = () => {
+            this.itemListingEl.innerHTML = "";
+
+            let docFrag = document.createDocumentFragment();
+            this.leads.map(item => {
+                let props = item;
+
+                let contentEl = document.createElement("div");
+                contentEl.className = "item";
+                contentEl.id = `item-${props.zip}`;
+
+                let content = this.getListingContent(props);
+                contentEl.innerHTML = content;
+               
+                docFrag.append(contentEl);
+            });
+
+            this.itemListingEl.appendChild(docFrag);
+        }
+
+        this.getListingContent = (item) => {
+            let amountContent;
+
+            if(this.activeId == 'MED SALES PRICE') {
+                // convert the $260,500 to 250k
+                let val = this.formatAmount(item);
+
+                amountContent = `<span class="">$${val}k</span>`;
+            } else {
+                // console.log(item[this.activeId]);
+                let val = this.formatCount(item);
+                amountContent = `<span class="marker-inner">${val}</span>`;
+            }
+
+            let leadCost = item[this.activeId] * 0.20;
+
+            return `
+            <div class="visual-amount">
+                ${amountContent}
+            </div>
+    
+            <div class="visual-description ">
+                <div class="code">${item.zip} - ${item.primary_city}</div>
+                <div class=" d-none">
+                    ${item.area_codes.slice(0,3)} ${item.primary_city},  ${item.county} ${item.states_State}
+                </div>
+
+                <div class="price">
+                    <b>Price: </b> $${leadCost.toFixed(0)}
+                </div>
+
+                <a href="#" class="buy-btn d-none">
+                    Buy Now
+                </a>
+            </div>
+    
+            <div class="favorites">
+                <i class="fa fa-heart"></i>
+            </div>`;
+        }
+
+        this.handleHoverEvent = (e) => {
+            // zoom to that location
+        }
+
+        // render the marker
+        this.renderMarkers = () => {
+            if(this.markers) {
+                this.markers.forEach(marker => marker.remove())
+            }
+
+            // markers
+            this.markers = this.leads.map(item => {
+                return this.getMarker(item);
+            });
+        }
+
+        this.getMarker = (item) => {
+            // price marker
+            let el;
+            let priceMarker = document.createElement('div');
+            priceMarker.className = 'div-marker price-marker';
+
+            // count markers
+            let countMarker = document.createElement('div');
+            countMarker.className = 'div-marker count-marker';
+           
+
+            if(this.activeId == 'MED SALES PRICE') {
+                let val = this.formatAmount(item);
+
+                priceMarker.innerHTML = `<div class="marker-inner">$${val}k</div>`;
+                el = priceMarker;
+            } else {
+                let val = this.formatCount(item);
+                countMarker.innerHTML = `<div class="marker-inner">${val}</div>`;
+
+                el = countMarker;
+            }  
+            
+            // popup
+            let medianVal = this.formatAmount(item);
+            let popup = new mapboxgl.Popup({focusAfterOpen:false,  offset:25})
+                .setHTML(`<div class="popup-content">
+                    <div class="visual-description">
+                        <div class="address">
+                            ${item.area_codes.slice(0,3)} ${item.primary_city},  ${item.county} ${item.states_State}
+                        </div>
+                        <div class="code">${item.zip} - ${item.primary_city}</div>
+                    </div>
+
+                    <div class="marker-inner"><b>Median Price: $${medianVal}k </b></div>
+
+                    <div class="btn add-zip" id="add-zip" data-id="${item.zipcode}">Add ZIP</div>
+                </div>`
+                )
+
+            // popup events
+            popup.on('open', () => {
+                let btnAdd = document.querySelector(".btn.add-zip");
+                btnAdd.onclick = (e) => {
+                    let { dataset: { id } } = e.target;
+
+                    let entry = this.data.find(entry => entry.zipcode == id);
+                    this.updateSelectedZips(entry);
+                    this.updateSelectedZipsList();
+
+
+                    btnAdd.classList.add('on-add');
+                    setTimeout(() => btnAdd.classList.remove('on-add'), 500);
+                }
+            });
+
+            // marker instance
+            let markerInst = new mapboxgl.Marker({element:el});
+            markerInst.zipcode = item.zipcode;
+
+            el.onclick = () => {
+                // update the side tab section
+                this.updateSideSection(item);
+            };
+
+            el.onmouseenter = () => { 
+                // close any other popup
+                this.markers.forEach(mkr => {
+                    let markerPopup = mkr.getPopup();
+                    markerPopup.remove();
+                });
+
+                markerInst.togglePopup();
+            };
+
+            el.onmouseleave = () => { 
+                // markerInst.togglePopup(); 
+            };
+
+            markerInst
+                .setLngLat([parseFloat(item.lng), parseFloat(item.lat)])
+                .setPopup(popup)
+                .addTo(map);
+
+            // marker instance
+            if(this.activeZip == item.zipcode) {
+                markerInst.togglePopup();
+            }
+
+            return markerInst;
+        }
+
+        this.updateSideSection = (item) => {
+            let element = document.getElementById("lead-info");
+            let leadCost = item[this.activeId] * 0.20;
+
+            element.innerHTML = `<div>
+                <div class="code">${item.zip} - ${item.primary_city}</div>
+                <div class="price">
+                    <b>Available Leads: </b> ${item[this.activeId]}
+                </div>
+            </div>`;
+        }
+
+        this.formatAmount = (item) => {
+            // convert the $260,500 to 250k
+            let val = item["MED SALES PRICE"];
+            val = val.split("$")[1].replace(",", "");
+            val = parseInt(val) ? val : "0";
+
+            val = val.slice(0, 3);
+            
+            return val;
+        }
+
+        this.formatCount = (item) => {
+            // convert the $260,500 to 250k
+            let value = item[this.activeId];
+
+            if(value > 1000) {
+                value = value/1000;
+                value = value.toFixed(1);
+
+                value = `${value}k`;
+            } 
+            
+            return value;
+        }
+
+        this.pntToGeojson = () => {
+            let fc = turf.featureCollection([]);
+
+            fc.features = this.data.map(item => {
+                let feature = {
+                    "type":"Feature",
+                    "geometry":{
+                        "type":"Point",
+                        "coordinates":[parseFloat(item.lng), parseFloat(item.lat)]
+                    },
+                    "properties":{...item}
+                }
+
+                return feature
+            });
+
+            return fc;
+        }
+
+
+        this.updateLeadsByState = (stateName) => {
+            let pnts = this.pntToGeojson();
+
+            pnts.features = pnts.features.filter(ft => ft.properties.states_State == stateName);
+            map.getSource('leads').setData(pnts);
+        }
+    }
+
+    let visualInstance = new Visuals();
+
+    // handling campaign selection
+    let Campaigns = function() {
+        this.campaignSection = document.getElementById("campaign-section");
+        this.closeCampaignSection = document.getElementById("close-campaign-section");
+        this.percentageText = document.getElementById("percentage");
+
+        // next-item toggler
+        this.nextButton = document.getElementById("next-btn");
+        this.campaignSection = document.querySelector(".campaign-section");
+        // let sectionZips = document.querySelector(".section-zips");
+
+
+        // back item toggler
+        this.videoSection = document.querySelector(".video");
+        this.videoTogglers = document.querySelectorAll(".campaign-toggler");
+        this.addCampaignBtn = document.getElementById("add-campaign");
+        this.videoIframes = document.querySelectorAll(".yt_player_iframe");
+    
+
+        // close video section
+        this.closeVideoButton = document.getElementById("close-video");
+
+        this.campaigns = [
+            {
+                name:'Video Brand Campaign',
+                id:'video',
+                videoUrl:"",
+                icon:'',
+                percentage:36,
+            },
+            {
+                name:'Text Message Campaign',
+                id:'text',
+                videoUrl:"",
+                icon:'',
+                percentage:36,
+            },
+            {
+                name:'Call for Appts Campaign',
+                id:'isa',
+                videoUrl:"",
+                icon:'',
+                percentage:36,
+            }
+        ];
+
+        this.selectedCampaigns = [];
+        this.addCampaignBtn = document.getElementById("add-campaign");
+
+        this.init = () => {
+            this.fireListeners();
+        }
+
+        this.renderCampaignTogglers = () => {
+
+        }
+
+        this.toggleCampaignSection = () => {
+            this.campaignSection.classList.toggle('open');
+        }
+
+        this.toggleVideoSection = () => {
+            this.videoSection.classList.toggle("open");
+        }
+
+        this.updatePercentageText = () => {
+            let percentages = this.selectedCampaigns.map(id => {
+                let percentage = this.campaigns.find(l => l.id == id).percentage;
+
+                return percentage;
+            });
+
+            let total = percentages.reduce((a,b) => a + b, 0);
+            this.percentageText.innerHTML = `${total + 100}%`;
+        }
+
+        this.stopVideo = () => {
+            this.videoIframes.forEach(video => {
+                video.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+            })
+        }
+
+        this.fireListeners = () => {
+
+            this.addCampaignBtn.onclick = (e) => this.handleClick(e);
+            this.nextButton.onclick = (e) => {
+                this.toggleCampaignSection();
+            }
+
+            this.closeVideoButton.onclick = (e) => {
+                e.stopPropagation();
+
+                this.toggleVideoSection();
+
+                // stop any playing video
+                this.stopVideo();
+            }
+
+            // togglers
+            this.videoTogglers.forEach(toggler => {
+                toggler.onclick = (e) => {
+                    this.handleTogglerClick(e);
+                }
+            });
+
+            this.closeCampaignSection.onclick = (e) => {
+                this.toggleCampaignSection();
+            }
+            
+            this.handleFinalStep();
+        }
+
+        this.handleTogglerClick = (e) => {
+            let { dataset : { id, text } } = e.target;
+            let target = e.target;
+            console.log(e.target);
+
+            if(target.classList.contains('selected')) {
+                target.classList.remove('selected');
+
+                // remove the campaign from selection
+                this.selectedCampaigns = this.selectedCampaigns.filter(entry => entry != target.id);
+                this.updatePercentageText();
+                return;
+            }
+
+            
+            this.toggleVideoSection();
+            this.addCampaignBtn.setAttribute('data-campaign', e.target.id);
+
+            // display specific iframe
+            let iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                console.log(`iframe-${id}`);
+
+                if(iframe.id == `iframe-${id}`) {
+                    iframe.classList.remove('d-none');
+
+                    return iframe;
+                }
+
+                iframe.classList.add('d-none');
+            });
+
+            // update the caption text
+            document.querySelector("#add-campaign #caption").innerHTML = `(${text})`;
+        }
+
+        this.handleClick = (e) => {
+            console.log("Button Click");
+
+            let { dataset : {campaign} } = e.target;
+
+            if(this.selectedCampaigns.indexOf(campaign) != -1) {
+                this.selectedCampaigns = this.selectedCampaigns.filter(entry => entry != campaign);
+                this.handleCampaignSelection(campaign.toLowerCase(), true);
+            } else {
+                this.selectedCampaigns.push(campaign);
+                this.handleCampaignSelection(campaign.toLowerCase(), false);
+            }
+
+            this.toggleVideoSection();
+            this.updatePercentageText();
+            this.stopVideo();
+        }
+
+        this.handleCampaignSelection = (campaignId, isSelected=true) => {
+            let element = document.getElementById(campaignId);
+
+            console.log("Select Campagn btn");
+            if(isSelected) {
+                element.classList.remove("selected")
+            } else {
+                element.classList.add("selected");
+            }
+        }
+
+        this.handleFinalStep = () => {
+            let openFormBtn = document.getElementById("final-step");
+            openFormBtn.onclick = (e) => {
+                // formInstance.toggleForm();
+                // this.toggleForm();
+
+                // construct the candley url
+                // let formString = Object.keys(this.fields).map(key => `${key}=${this.fields[key]}`).join("&");
+                let campaignString = this.selectedCampaigns.join(", ");
+                let zipCodesString = visualInstance.selectedZips.map(zp => zp.zipcode).join(", ");
+
+                // url
+                this.calendlyUrl = `https://calendly.com/highiq-marketing/strike-first-lead-campaign?a5=${campaignString}&a4=${zipCodesString}`;
+                console.log(this.calendlyUrl);
+                window.open(this.calendlyUrl, '_blank').focus();
+            }
+
+            
+        }
+    }
+
+    let campaignInstance = new Campaigns();
+    campaignInstance.init();
+
+    // form handler
+    let FormHandler = function() {
+        this.formSection = document.getElementById("user-form");
+        this.closeFormBtn = document.getElementById("close-user-form");
+
+        this.fields = {
+            first_name:"", //(first name)
+            last_name:"", //(last name)
+            a1:"", // email
+            a2:"", //(brokerage name)
+            a3:"", //(phone number)
+        };
+
+        this.init = () => {
+            let inputFields = document.querySelectorAll("form input");
+            inputFields.forEach(field => {
+                field.onchange = this.fieldOnchange;
+            });
+
+            this.formInput = document.getElementById("input-form");
+            this.formInput.onsubmit = (e) => {
+                e.preventDefault();
+
+                // this.onSubmit(e);
+            }
+
+            this.closeFormBtn.onclick = (e) => {
+                this.toggleForm();
+            }
+        }
+
+        this.updateField = (name, value) => {
+            let fields = {...this.fields};
+            fields[name] = value;
+
+            this.fields = {...fields };
+        }
+
+        this.toggleForm = () => {
+            this.formSection.classList.toggle("open");
+        }
+
+        this.fieldOnchange = (e) => {
+            // validate
+            let {name, value} = e.target;
+            this.updateField(name, value);
+        }
+
+        // submit event
+        this.onSubmit = (e) => {
+            // e.preventDefault();
+
+            // construct the candley url
+            let formString = Object.keys(this.fields).map(key => `${key}=${this.fields[key]}`).join("&");
+            let campaignString = campaignInstance.selectedCampaigns.join(", ");
+            let zipCodesString = visualInstance.selectedZips.map(zp => zp.zipcode).join(", ");
+
+            // a4:"", //(zip codes selected)
+            // a5:"", //(campaign types selected)
+            // 
+            this.calendlyUrl = `https://calendly.com/highiq-marketing/strike-first-lead-campaign?${formString}&a5=${campaignString}&a4=${zipCodesString}`;
+            console.log(this.calendlyUrl);
+
+            this.updateAndDisplayCandley(this.calendlyUrl);
+        }
+
+        this.updateAndDisplayCandley = (url) => {
+            // Calendly.initPopupWidget(
+            //     {url}
+            // );
+
+            window.open(url, '_blank').focus();
+
+            // open a new url
+            return false;
+        }
+    }
+
+    let formInstance = new FormHandler();
+    formInstance.init();
+
+    // get unclustered markers 
+    const leads = {};
+    let leadsOnScreen = {};
+    let previousCenter = map.getCenter();
+    
+    function updateMarkers() {
+        let newCenter = map.getCenter();
+        if(previousCenter.toString() == newCenter.toString()) {
+            return;
+        }
+
+        console.log("Marker update");
+        previousCenter = map.getCenter();
+
+        const newLeads = {};
+        const features = map.querySourceFeatures('leads');
+        
+        // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+        // and add it to the map if it's not there already
+        for (const feature of features) {
+           
+            const coords = feature.geometry.coordinates;
+            const props = feature.properties;
+
+            if (props.cluster) continue;
+
+            
+
+            const id = props.zip;
+            let lead = leads[id];
+
+            if (!lead) {
+                lead = leads[id] = feature.properties;
+            }
+
+            newLeads[id] = lead;
+        
+            if (!leadsOnScreen[id]) { 
+                //marker.addTo(map);
+            }
+        }
+
+        // for every marker we've added previously, remove those that are no longer visible
+        for (const id in leadsOnScreen) {
+            if (!newLeads[id]) {
+                // leadsOnScreen[id].remove();
+            }
+        }
+
+        leadsOnScreen = newLeads;
+
+        // update the data items
+        visualInstance.updateLeads(
+            Object.values(leadsOnScreen) || []
+        );
+
+        // call the render method
+        visualInstance.renderVisual();
+    }
+
+    // refresh btn
+    document.getElementById('refresh-btn').onclick = (e) => {
+        e.stopPropagation();
+
+        // reset states opacity
+        map.setPaintProperty('states', 'fill-opacity', 0.8);
+
+        map.flyTo({
+            center: {lng: -98.40486166251202, lat: 39.13595229401548}, 
+            zoom:3.25
+        });
+
+        document.getElementById('lead-info').innerHTML = "";
+        visualInstance.selectedZips = [];
+        visualInstance.updateSelectedZipsList();
+
+    }
+
+    // collapse module
+    let Collapse = function() {
+        this.activeCollapse = null;
+        this.activeToggler = null;
+        this.collapseTogglers = document.querySelectorAll(".collapse-toggler");
+
+        this.fireListeners = () => {
+            for (i = 0; i < this.collapseTogglers.length; i++) {
+                let toggler = this.collapseTogglers[i];
+                toggler.addEventListener("click", () => {
+                    this.toggleCollapse(toggler);
+                });
+            }
+        }
+
+        this.toggleCollapse = (toggler) => {
+            var content = toggler.nextElementSibling;
+
+            if(this.activeCollapse == content) {
+                this.activeCollapse.style.maxHeight = 0;
+                toggler.classList.remove("active");
+
+                this.setActiveCollapse(null);
+                return;
+            }
+
+            toggler.classList.add("active");
+
+            this.activeCollapse ? this.activeCollapse.style.maxHeight = 0 : "";
+            content.style.maxHeight = content.scrollHeight + "px";
+
+            this.setActiveCollapse(content);
+            this.activeToggler ? this.activeToggler.classList.remove('active') : "";
+            this.activeToggler = toggler;
+
+            let id = toggler.dataset.id
+            // autoFullScreen(`iframe-${id}`);
+            
+        }
+
+        this.setActiveCollapse = (element) => {
+            this.activeCollapse = element;
+        }
+    }
+    
+    let collapseInstance = new Collapse();
+    collapseInstance.fireListeners();
+
+
+    // video auto fullscreen
+    function autoFullScreen(iframeId) {
+        let iframe = document.getElementById(iframeId);
+        let iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        console.log(iframeDoc);
+
+        let button = iframeDoc.querySelector(".ytp-button.ytp-large-play-button");
+        console.log(button);
+
+        button.onclick = function(e) {
+            let video = iframeDoc.querySelector("video");
+
+            console.log(video);
+            video.requestFullscreen()
+            .then(() => {
+                console.log("fullscreen");
+            });
+        }
+    }
+
+    // toggle sidetab
+    let sideTab = document.querySelector(".side-tab");
+    document.getElementById("tab-toggler").onclick = (e) => {
+        e.stopPropagation();
+        sideTab.classList.add("active");;
+    }
+
+    document.getElementById("close-side-tab").onclick = (e) => {
+        e.stopPropagation();
+        sideTab.classList.remove("active");
+
+        // reset the side tab
+        // campaignSection.classList.add('d-none');
+        // sectionZips.classList.remove('d-none');
+    }
+
+    // visual toggler
+    let visualTabs = document.querySelector(".visual-tabs");
+    document.getElementById("dropdown-toggler").onclick = (e) => {
+        visualTabs.classList.toggle('active');
+    }
+
+    
+    
+
+
+    // Video: How the data benefits the user.
+    // Collapsible data
+    // On geocode: Bug, does not display the points initially, no filtering: Missing State/Regions
+    function isMobile() {
+        var hasTouchScreen = false;
+
+        if ("maxTouchPoints" in navigator) {
+            hasTouchScreen = navigator.maxTouchPoints > 0;
+        } else if ("msMaxTouchPoints" in navigator) {
+            hasTouchScreen = navigator.msMaxTouchPoints > 0;
+        } else {
+            var mQ = window.matchMedia && matchMedia("(pointer:coarse)");
+            if (mQ && mQ.media === "(pointer:coarse)") {
+                hasTouchScreen = !!mQ.matches;
+            } else if ('orientation' in window) {
+                hasTouchScreen = true; // deprecated, but good fallback
+            } else {
+                // Only as a last resort, fall back to user agent sniffing
+                var UA = navigator.userAgent;
+                hasTouchScreen = (
+                    /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+                    /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA)
+                );
+            }
+        }
+
+        return hasTouchScreen;
+    }
+
+    // sort height issues
+    let vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+    // We listen to the resize event
+    window.addEventListener('resize', () => {
+        // We execute the same script as before
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    });
+</script>
+<script>!function(d,s,id){ var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "https://app.11sight.com/button_loader.js"; fjs.parentNode.insertBefore(js, fjs); }(document,"script","elevensight-11buttonjs"); </script>
+
+</body>
+</html>
